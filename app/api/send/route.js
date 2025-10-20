@@ -73,14 +73,14 @@ export async function POST(req) {
     // 성공 → 루트 + ok=1
     return new Response(null, {
       status: 303,
-      headers: { Location: "https://www.semeng.co.kr/?ok=1" },
+      headers: { Location: "https://www.semeng.co.kr/default/?ok=1" },
     });
   } catch (e) {
     console.error("Mail send error:", e);
     // 실패 → 루트 + ok=0
     return new Response(null, {
       status: 303,
-      headers: { Location: "https://www.semeng.co.kr/?ok=0" },
+      headers: { Location: "https://www.semeng.co.kr/default/?ok=0" },
     });
   }
 }
