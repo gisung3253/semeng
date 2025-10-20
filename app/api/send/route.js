@@ -23,16 +23,19 @@ export async function POST(req) {
     if (file && typeof file === "object" && file.name) {
       const buffer = Buffer.from(await file.arrayBuffer());
       if (buffer.length > 5 * 1024 * 1024) {
-        return new Response("File too large", { status: 413 });
+        // 실패로 처리: 루트로 리디렉션 + ok=0
+        return new Response(null, {
+          status: 303,
+          headers: { Location: "https://www.semeng.co.kr/?ok=0" },
+        });
       }
       attachments.push({ filename: file.name, content: buffer });
     }
 
-    // ✅ 포트 587 사용 시 secure는 false
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || "smtp.naver.com",
       port: Number(process.env.SMTP_PORT) || 587,
-      secure: false, // ✅ 587 포트는 false (TLS 사용)
+      secure: false, // 587 포트는 false
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS,
@@ -61,23 +64,23 @@ export async function POST(req) {
         "문의내용:",
         message,
         "",
-        `개인정보동의: ${agreePrivacy}`,
-        `이벤트동의: ${agreeEvent}`,
       ].join("\n"),
       attachments,
     };
 
     await transporter.sendMail(mailOptions);
 
+    // 성공 → 루트 + ok=1
     return new Response(null, {
       status: 303,
-      headers: { Location: "https://www.semeng.co.kr/under_banner/banner?ok=1" },
+      headers: { Location: "https://www.semeng.co.kr/?ok=1" },
     });
   } catch (e) {
     console.error("Mail send error:", e);
+    // 실패 → 루트 + ok=0
     return new Response(null, {
       status: 303,
-      headers: { Location: "https://www.semeng.co.kr/under_banner/banner?ok=0" },
+      headers: { Location: "https://www.semeng.co.kr/?ok=0" },
     });
   }
 }
