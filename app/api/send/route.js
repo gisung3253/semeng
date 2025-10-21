@@ -15,8 +15,7 @@ export async function POST(req) {
     const workers = formData.get("직원수") || "";
     const message = formData.get("문의내용") || "";
     const equip = formData.getAll("필요장비[]").join(", ");
-    const agreePrivacy = formData.get("개인정보동의") ? "동의함" : "미동의";
-    const agreeEvent = formData.get("이벤트동의") ? "동의함" : "미동의";
+
 
     const file = formData.get("bizfile");
     const attachments = [];
