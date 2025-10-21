@@ -47,7 +47,7 @@ export async function POST(req) {
 
     const mailOptions = {
       from: `"정부지원 문의" <${process.env.MAIL_USER}>`,
-      to: "sem8200@naver.com",
+      to: "semwerpoo@naver.com",
       subject: `정부지원 문의 - ${company} (${name})`,
       text: [
         "▶ 정부지원 문의 접수 내역",
