@@ -22,10 +22,12 @@ function extractAllItems(xml) {
     const pubDate = new Date(extract("pubDate", raw).trim() || Date.now());
     const desc = clean(extract("description", raw));
 
-    // 썸네일 추출 (img src)
+    // ✅ 썸네일 추출 (없으면 기본 이미지로 대체)
     const imgMatch =
       desc.match(/<img[^>]+src=["']([^"']+\.(?:jpg|jpeg|png|gif|webp))["']/i);
-    const thumbnail = imgMatch ? imgMatch[1] : null;
+    const thumbnail = imgMatch
+      ? imgMatch[1]
+      : "https://www.brandb.net/_next/image?url=https%3A%2F%2Fapi.brandb.net%2Fapi%2Fv2%2Fcommon%2Fimage%3FfileId%3D26953&w=640&q=75";
 
     // 본문 요약 텍스트 (태그 제거)
     const summary = desc
@@ -42,7 +44,7 @@ function extractAllItems(xml) {
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const blogId = searchParams.get("blogId");
-  const limit = Number(searchParams.get("limit") || 6);
+  const limit = Number(searchParams.get("limit") || 8); // ✅ 기본 8개로 변경
 
   if (!blogId) {
     return NextResponse.json({ error: "Missing blogId" }, { status: 400 });
