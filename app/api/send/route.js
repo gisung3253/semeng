@@ -16,6 +16,9 @@ export async function POST(req) {
     const message = formData.get("문의내용") || "";
     const equip = formData.getAll("필요장비[]").join(", ");
 
+    // ▼ 신규 필드
+    const subsidy = formData.get("국고보조지원") || "";   // "유" | "무" | ""
+    const agency  = formData.get("시행처") || "";         // 시행처 입력값
 
     const file = formData.get("bizfile");
     const attachments = [];
@@ -34,7 +37,7 @@ export async function POST(req) {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || "smtp.naver.com",
       port: Number(process.env.SMTP_PORT) || 587,
-      secure: false, // 587 포트는 false
+      secure: false,
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS,
@@ -54,6 +57,8 @@ export async function POST(req) {
         `필요장비: ${equip || "선택 없음"}`,
         `지역: ${region}`,
         `직원수: ${workers}`,
+        `과거 국고보조지원 여부: ${subsidy || "미선택"}`,
+        `시행처: ${subsidy === "유" ? (agency || "미입력") : "-"}`,
         "",
         `회사명: ${company}`,
         `담당자: ${name}`,
